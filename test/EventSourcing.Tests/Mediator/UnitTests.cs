@@ -1,5 +1,6 @@
 ﻿using EventSourcing.Domain.Exceptions;
 using EventSourcing.Domain.Interfaces.Mediator;
+using EventSourcing.Domain.Interfaces.Queue;
 
 namespace EventSourcing.Tests.Mediator
 {
@@ -32,5 +33,7 @@ namespace EventSourcing.Tests.Mediator
 
             await Assert.ThrowsAsync<EventHandlerNotFoundException>(async()=>await mediator.RunAsync(new RegisterCommandEvent()));
         }
+
+        
     }
 }

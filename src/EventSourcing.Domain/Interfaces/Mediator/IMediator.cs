@@ -1,5 +1,6 @@
 ﻿using EventSourcing.Domain.Interfaces.Action;
 using EventSourcing.Domain.Interfaces.Event;
+using EventSourcing.Domain.Services.Queue;
 
 namespace EventSourcing.Domain.Interfaces.Mediator
 {
@@ -9,5 +10,8 @@ namespace EventSourcing.Domain.Interfaces.Mediator
         Task RunAsync<E>( E @event, IActionInputDto<E>? input = null, IActionSuccessResult<IActionOutputDto<E>>? onSuccess = null, IActionFailureResult? onFailure = null ) where E : IEvent;
         Task<bool> IsHandlerExistsAsync( IEvent evt );
         Task<bool> IsHandlerExistsAsync<E>() where E : IEvent;
+        Task<bool> IsQueuempty();
+
+
     }
 }
