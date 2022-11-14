@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EventSourcing.Domain.Interfaces.Event;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace EventSourcing.Domain.Services.Action.SimpleRegister
 {
-    public class SimpleRegisterEventHandler
+    public class SimpleRegisterEventHandler : IEventHandler<RegisterCommandEvent>
     {
-        public event EventHandler NewUserRegistered;
-
-        public void OnNewUserRegistered(EventArgs eventArgs )
+        public Task Handle( IEvent @event )
         {
-            NewUserRegistered?.Invoke( this, eventArgs );
+            var id = @event.Id;
+
+            return Task.CompletedTask;
         }
     }
 }
