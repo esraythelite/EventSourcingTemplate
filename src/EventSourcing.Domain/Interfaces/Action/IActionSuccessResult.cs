@@ -1,7 +1,8 @@
 ﻿namespace EventSourcing.Domain.Interfaces.Action
 {
-    public interface IActionSuccessResult<T> : IActionResult
+    public interface IActionSuccessResult<IActionOutputDto> : IActionResult 
     {
-        T Result { get; set; }
+        IActionOutputDto Result { get; set; }
+     
     }
 }

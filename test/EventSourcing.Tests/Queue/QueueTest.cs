@@ -27,31 +27,32 @@ namespace EventSourcing.Tests.Queue
         public async Task Should_Not_Return_Zero_If_Queue_Contains_An_Item()
         {
             var (mediator, queue) = GetMediator();
-            var res = new RegisterSuccessResultEvent();
+            var evnt = new RegisterInputDto {
+                Age = 36,
+                FirstName = "Yashar",
+                LastName = "Aliabbasi",
+                Id = Guid.NewGuid()
+
+            };
+            var res = new RegisterSuccessResultEvent(evnt) as IActionSuccessResult<IActionOutputDto<IEvent>>;
+
             queue.AddEvent(new RegisterCommandEvent
             {
                 Id = Guid.NewGuid(),
-                Input = new RegisterInputDto
-                {
-                    Age = 36,
-                    FirstName = "Yashar",
-                    LastName = "Aliabbasi",
-                    Id = Guid.NewGuid()
-                }
-            });
+                Input = evnt
+            }); 
 
             await mediator.AddHandlerAsync(new SimpleRegisterCommandHandler());
 
             RegisterCommandEvent @event = queue.Events.Dequeue() as RegisterCommandEvent ?? throw new Exception();
 
-
             await mediator.RunAsync(@event, @event.Input, res);
             queue.Events.ShouldNotBeEmpty();
             queue.Events.Any(m => m.GetType() == res.GetType()).ShouldBeTrue();
-            res.Result.Result.Input.FirstName.ShouldBe("Yashar");
-            res.Result.Result.Input.LastName.ShouldBe("Aliabbasi");
-            res.Result.Result.Input.Age.ShouldBe(36);
-            res.Result.Result.Input.Id.ShouldNotBe(Guid.Empty);
+            res.Result.FirstName.ShouldBe("Yashar");
+            res.Result.LastName.ShouldBe("Aliabbasi");
+            res.Result.Age.ShouldBe(36);
+            res.Result.Id.ShouldNotBe(Guid.Empty);
         }
     }
 }

@@ -3,7 +3,7 @@ using EventSourcing.Domain.Interfaces.Event;
 
 namespace EventSourcing.Domain.Services.Action.SimpleRegister
 {
-    public class RegisterInputDto : IActionInputDto<RegisterCommandEvent>, IActionInputDto<IEvent>
+    public class RegisterInputDto : IActionInputDto<RegisterCommandEvent>
     {
         public Guid Id { get; set; }
         public string FirstName { get; set; }
