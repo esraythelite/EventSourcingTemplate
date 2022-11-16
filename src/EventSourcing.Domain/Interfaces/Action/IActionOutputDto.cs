@@ -6,5 +6,6 @@ namespace EventSourcing.Domain.Interfaces.Action
     {
         Guid Id { get; set; }
         T Result { get; }
+        T SecondResult { get; set; }
     }
 }
