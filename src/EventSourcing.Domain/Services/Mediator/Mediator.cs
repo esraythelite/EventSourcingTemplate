@@ -11,7 +11,12 @@ namespace EventSourcing.Domain.Services.Mediator
     public class Mediator :IMediator
     {
         Dictionary<Type, List<object>> Handlers { get; set; } = new Dictionary<Type, List<object>>();
-        BasicEventQueue basicEventQueue = new();
+        IEventQueue EventQueue { get; set; }
+
+        public Mediator(IEventQueue eventQueue)
+        {
+            EventQueue = eventQueue;
+        }
 
         public async Task AddHandlerAsync<E>(params IAction<E, IActionInputDto<E>, IActionOutputDto<E>>[] handlers ) where E : IEvent
         {
@@ -24,39 +29,35 @@ namespace EventSourcing.Domain.Services.Mediator
         public Task<bool> IsHandlerExistsAsync<E>() where E : IEvent
             => Task.FromResult(Handlers.ContainsKey(typeof(E)));
 
-        public async Task RunAsync<E>( E @event, IActionInputDto<E>? input, IActionSuccessResult<IActionOutputDto<E>>? onSuccess = null, IActionFailureResult? onFailure = null ) where E : IEvent
+        public async Task RunAsync<E>( E @event, IActionInputDto<E>? input = null, IActionSuccessResult<IActionOutputDto<E>>? onSuccess = null, IActionFailureResult? onFailure = null ) where E : IEvent
         {
             if (!await IsHandlerExistsAsync<E>())
                 throw new EventHandlerNotFoundException();
 
             var handlers = Handlers[typeof(E)];
 
-            
-
             foreach (var handler in handlers)
             {
                 try
                 {
-                    var res = await (handler as IAction<E, IActionInputDto<E>, IActionOutputDto<E>>).ExecuteAsync(input);
+                    var h = handler as IAction<E, IActionInputDto<E>, IActionOutputDto<E>>;
+                    var res = await h.ExecuteAsync(input);
                     if (onSuccess != null)
                     {
                         onSuccess.Result = res;
-                        basicEventQueue.AddEvent(@event);
+                        EventQueue.AddEvent(onSuccess);
                     }
                 } catch (BaseException baseExp)
                 {
-                    
+                    if (onFailure != null)
+                    {
+                        onFailure.Error = baseExp;
+                        EventQueue.AddEvent(onFailure);
+                    }
                 }
             }
         }
 
-        public async Task<bool> IsQueuempty()
-        {
-            if (basicEventQueue.Events.Count > 0)
-            {
-               return false;
-            }
-            return true;
-        }
+        //public Task<bool> IsQueuempty() => Task.FromResult(EventQueue.Events.Any());
     }
 }

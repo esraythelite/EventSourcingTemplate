@@ -2,8 +2,8 @@
 
 namespace EventSourcing.Domain.Interfaces.Action
 {
-    public interface IActionFailureResult
+    public interface IActionFailureResult : IActionResult
     {
-        BaseException Error { get; }
+        BaseException Error { get; set; }
     }
 }

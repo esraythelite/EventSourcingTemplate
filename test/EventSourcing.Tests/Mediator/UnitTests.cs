@@ -1,6 +1,7 @@
 ﻿using EventSourcing.Domain.Exceptions;
 using EventSourcing.Domain.Interfaces.Mediator;
 using EventSourcing.Domain.Interfaces.Queue;
+using EventSourcing.Domain.Services.Queue;
 
 namespace EventSourcing.Tests.Mediator
 {
@@ -11,17 +12,19 @@ namespace EventSourcing.Tests.Mediator
         {
             IEvent evt = new RegisterCommandEvent();
             var action = new SimpleRegisterCommandHandler();
-            IMediator mediator = new Domain.Services.Mediator.Mediator();
+            IMediator mediator = GetMediator();
 
             await mediator.AddHandlerAsync(action);
 
             Assert.True(await mediator.IsHandlerExistsAsync(evt));
         }
 
+        private static Domain.Services.Mediator.Mediator GetMediator() => new Domain.Services.Mediator.Mediator(new BasicEventQueue());
+
         [Fact]
         public async Task Should_Return_False_For_Not_Added_Event_Handler()
         {
-            IMediator mediator = new Domain.Services.Mediator.Mediator();
+            IMediator mediator = GetMediator();
 
             Assert.False(await mediator.IsHandlerExistsAsync<RegisterCommandEvent>());
         }
@@ -29,7 +32,7 @@ namespace EventSourcing.Tests.Mediator
         [Fact]
         public async Task Should_Throw_EventHandlerNotFoundException_If_Event_Handler_Not_exists()
         {
-            IMediator mediator = new Domain.Services.Mediator.Mediator();
+            IMediator mediator = GetMediator();
 
             await Assert.ThrowsAsync<EventHandlerNotFoundException>(async()=>await mediator.RunAsync(new RegisterCommandEvent()));
         }

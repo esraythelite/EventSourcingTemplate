@@ -11,6 +11,5 @@ namespace EventSourcing.Domain.Interfaces.Action
         //where SuccessEvent : IActionSuccessResult<OutputDto>
     {
         Task<OutputDto> ExecuteAsync( InputDto input, CancellationToken? cancellationToken = null );
-        Task<IActionResult> Action( Event @event);
     }
 }
