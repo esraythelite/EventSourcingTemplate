@@ -58,6 +58,5 @@ namespace EventSourcing.Domain.Services.Mediator
             }
         }
 
-        //public Task<bool> IsQueuempty() => Task.FromResult(EventQueue.Events.Any());
     }
 }

@@ -40,18 +40,18 @@ namespace EventSourcing.Tests.Queue
                 }
             });
 
+            // RunAsync<E>( E @event, IActionInputDto<E>? input = null, IActionSuccessResult<IActionOutputDto<E>>? onSuccess = null, IActionFailureResult? onFailure = null ) where E : IEvent
             await mediator.AddHandlerAsync(new SimpleRegisterCommandHandler());
 
             RegisterCommandEvent @event = queue.Events.Dequeue() as RegisterCommandEvent ?? throw new Exception();
 
-
             await mediator.RunAsync(@event, @event.Input, res);
             queue.Events.ShouldNotBeEmpty();
             queue.Events.Any(m => m.GetType() == res.GetType()).ShouldBeTrue();
-            res.Result.Result.Input.FirstName.ShouldBe("Yashar");
-            res.Result.Result.Input.LastName.ShouldBe("Aliabbasi");
-            res.Result.Result.Input.Age.ShouldBe(36);
-            res.Result.Result.Input.Id.ShouldNotBe(Guid.Empty);
+            res.Result.FirstName.ShouldBe("Yashar");
+            res.Result.LastName.ShouldBe("Aliabbasi");
+            res.Result.Age.ShouldBe(36);
+            res.Result.Id.ShouldNotBe(Guid.Empty);
         }
     }
 }
