@@ -11,6 +11,7 @@ namespace EventSourcing.Domain.Services.Action.SimpleRegister
         public string LastName { get; set; }
         public int Age { get; set; }
 
+        public RegisterCommandEvent Result => throw new NotImplementedException();
 
         //public RegisterCommandEvent Result => new()
         //{
@@ -23,5 +24,7 @@ namespace EventSourcing.Domain.Services.Action.SimpleRegister
         //        LastName = LastName
         //    }
         //};
+
+
     }
 }
