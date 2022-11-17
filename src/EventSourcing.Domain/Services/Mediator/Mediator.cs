@@ -8,17 +8,17 @@ using EventSourcing.Domain.Services.Queue;
 
 namespace EventSourcing.Domain.Services.Mediator
 {
-    public class Mediator :IMediator
+    public class Mediator : IMediator
     {
         Dictionary<Type, List<object>> Handlers { get; set; } = new Dictionary<Type, List<object>>();
         IEventQueue EventQueue { get; set; }
 
-        public Mediator(IEventQueue eventQueue)
+        public Mediator( IEventQueue eventQueue )
         {
             EventQueue = eventQueue;
         }
 
-        public async Task AddHandlerAsync<E>(params IAction<E, IActionInputDto<E>, IActionOutputDto<E>>[] handlers ) where E : IEvent
+        public async Task AddHandlerAsync<E>( params IActionHandler<E, IActionInputDto<E>, IActionOutputDto<E>>[] handlers ) where E : IEvent
         {
             if (!await IsHandlerExistsAsync<E>())
                 Handlers[typeof(E)] = new List<object>();
@@ -40,14 +40,15 @@ namespace EventSourcing.Domain.Services.Mediator
             {
                 try
                 {
-                    var h = handler as IAction<E, IActionInputDto<E>, IActionOutputDto<E>>;
+                    var h = handler as IActionHandler<E,            IActionInputDto<E>, IActionOutputDto<E>>;
                     var res = await h.ExecuteAsync(input);
                     if (onSuccess != null)
                     {
                         onSuccess.Result = res;
                         EventQueue.AddEvent(onSuccess);
                     }
-                } catch (BaseException baseExp)
+                }
+                catch (BaseException baseExp)
                 {
                     if (onFailure != null)
                     {

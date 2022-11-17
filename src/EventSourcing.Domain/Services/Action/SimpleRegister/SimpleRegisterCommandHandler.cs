@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace EventSourcing.Domain.Services.Action.SimpleRegister
 {
-    public class SimpleRegisterCommandHandler : IAction<RegisterCommandEvent, IActionInputDto<RegisterCommandEvent>, IActionOutputDto<RegisterCommandEvent>>
+    public class SimpleRegisterCommandHandler : IActionHandler<RegisterCommandEvent, IActionInputDto<RegisterCommandEvent>, IActionOutputDto<RegisterCommandEvent>>
     {
         public async Task<IActionOutputDto<RegisterCommandEvent>> ExecuteAsync( IActionInputDto<RegisterCommandEvent> input, CancellationToken? cancellationToken = null )
         {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EventSourcing.Domain.Services.Action.SimpleRegister
 {
-    public class RegisterEventQueue : BasicEventQueue
+    public class RegisterEventQueue : EventQueue
     {
 
     }

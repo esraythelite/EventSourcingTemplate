@@ -7,11 +7,11 @@ namespace EventSourcing.Tests.Queue
 {
     public class QueueTest
     {
-        BasicEventQueue GetQueue() => new();
-        Tuple<MediatorClass,BasicEventQueue> GetMediator() {
+        EventQueue GetQueue() => new();
+        Tuple<MediatorClass,EventQueue> GetMediator() {
             var queue = GetQueue();
             var mediator = new MediatorClass(queue);
-            return new Tuple<MediatorClass, BasicEventQueue>(mediator, queue);
+            return new Tuple<MediatorClass, EventQueue>(mediator, queue);
         }
 
         [Fact]
@@ -26,6 +26,7 @@ namespace EventSourcing.Tests.Queue
         [Fact]
         public async Task Should_Not_Return_Zero_If_Queue_Contains_An_Item()
         {
+    
             var (mediator, queue) = GetMediator();
            
             var res = new RegisterSuccessResultEvent();
@@ -33,12 +34,15 @@ namespace EventSourcing.Tests.Queue
             queue.AddEvent(new RegisterCommandEvent
             {
                 Id = Guid.NewGuid(),
-                Input = new RegisterInputDto{ 
+                Input = new RegisterInputDto
+                {
                     Age = 36,
                     FirstName = "Yashar",
                     LastName = "Aliabbasi",
                     Id = Guid.NewGuid()
-                    }
+
+                }
+
             }); 
 
             await mediator.AddHandlerAsync(new SimpleRegisterCommandHandler());
@@ -48,10 +52,10 @@ namespace EventSourcing.Tests.Queue
             await mediator.RunAsync(@event, @event.Input, res);
             queue.Events.ShouldNotBeEmpty();
             queue.Events.Any(m => m.GetType() == res.GetType()).ShouldBeTrue();
-            res.Result.Result.Input.FirstName.ShouldBe("Yashar");
-            res.Result.Result.Input.LastName.ShouldBe("Aliabbasi");
-            res.Result.Result.Input.Age.ShouldBe(36);
-            res.Result.Result.Input.Id.ShouldNotBe(Guid.Empty);
+            ((RegisterOutputDto)(res.Result)).FirstName.ShouldBe("Yashar");
+            ((RegisterOutputDto)(res.Result)).LastName.ShouldBe("Aliabbasi");
+            ((RegisterOutputDto)(res.Result)).Age.ShouldBe(36);
+            ((RegisterOutputDto)(res.Result)).Id.ShouldNotBe(Guid.Empty);
         }
     }
 }

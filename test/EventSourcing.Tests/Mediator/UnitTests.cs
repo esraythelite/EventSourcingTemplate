@@ -19,7 +19,7 @@ namespace EventSourcing.Tests.Mediator
             Assert.True(await mediator.IsHandlerExistsAsync(evt));
         }
 
-        private static Domain.Services.Mediator.Mediator GetMediator() => new Domain.Services.Mediator.Mediator(new BasicEventQueue());
+        private static Domain.Services.Mediator.Mediator GetMediator() => new Domain.Services.Mediator.Mediator(new EventQueue());
 
         [Fact]
         public async Task Should_Return_False_For_Not_Added_Event_Handler()
