@@ -29,7 +29,7 @@ namespace EventSourcing.Domain.Services.Mediator
         public Task<bool> IsHandlerExistsAsync<E>() where E : IEvent
             => Task.FromResult(Handlers.ContainsKey(typeof(E)));
 
-        public async Task RunAsync<E>( E @event, IActionInputDto<E>? input = null, IActionSuccessResult<IActionOutputDto<E>>? onSuccess = null, IActionFailureResult? onFailure = null ) where E : IEvent
+        public async Task RunAsync<E>( E @event, IActionInputDto<E>? input = null, IActionSuccessResult<IActionOutputDto<E>,E>? onSuccess = null, IActionFailureResult? onFailure = null ) where E : IEvent
         {
             if (!await IsHandlerExistsAsync<E>())
                 throw new EventHandlerNotFoundException();

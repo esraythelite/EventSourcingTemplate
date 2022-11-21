@@ -28,8 +28,8 @@ namespace EventSourcing.Tests.Queue
         {
     
             var (mediator, queue) = GetMediator();
-           
-            var res = new RegisterSuccessResultEvent();
+
+            IActionSuccessResult<IActionOutputDto<RegisterCommandEvent>,RegisterCommandEvent> res = new RegisterSuccessResultEvent();
 
             queue.AddEvent(new RegisterCommandEvent
             {
@@ -40,9 +40,7 @@ namespace EventSourcing.Tests.Queue
                     FirstName = "Yashar",
                     LastName = "Aliabbasi",
                     Id = Guid.NewGuid()
-
                 }
-
             }); 
 
             await mediator.AddHandlerAsync(new SimpleRegisterCommandHandler());
@@ -52,10 +50,12 @@ namespace EventSourcing.Tests.Queue
             await mediator.RunAsync(@event, @event.Input, res);
             queue.Events.ShouldNotBeEmpty();
             queue.Events.Any(m => m.GetType() == res.GetType()).ShouldBeTrue();
-            ((RegisterOutputDto)(res.Result)).FirstName.ShouldBe("Yashar");
-            ((RegisterOutputDto)(res.Result)).LastName.ShouldBe("Aliabbasi");
-            ((RegisterOutputDto)(res.Result)).Age.ShouldBe(36);
-            ((RegisterOutputDto)(res.Result)).Id.ShouldNotBe(Guid.Empty);
+
+            ((RegisterOutputDto)res.Result).FirstName.ShouldBe("Yashar");
+            ((RegisterOutputDto)res.Result).LastName.ShouldBe("Aliabbasi");
+            ((RegisterOutputDto)res.Result).Age.ShouldBe(36);
+            ((RegisterOutputDto)res.Result).Id.ShouldNotBe(Guid.Empty);
+
         }
     }
 }
