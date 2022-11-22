@@ -6,6 +6,6 @@ namespace EventSourcing.Domain.Interfaces.Queue
     {
         Guid Id { get; set; }
         Queue<IEvent> Events { get; set; }
-        void AddEvent( IEvent @event );
+        void AddEvent(IEvent @event);
     }
 }

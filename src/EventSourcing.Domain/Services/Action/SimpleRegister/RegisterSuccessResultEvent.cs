@@ -2,11 +2,11 @@
 
 namespace EventSourcing.Domain.Services.Action.SimpleRegister
 {
-    public class RegisterSuccessResultEvent : IActionSuccessResult<IActionOutputDto<RegisterCommandEvent>>
+    public class RegisterSuccessResultEvent<T> : IActionSuccessResult<T> where T : IActionOutputDto
     {
     
         public Guid Id { get; set; } = Guid.NewGuid();
-        public IActionOutputDto<RegisterCommandEvent> Result { get; set; }
+        public T Result { get; set; }
         
 
     }

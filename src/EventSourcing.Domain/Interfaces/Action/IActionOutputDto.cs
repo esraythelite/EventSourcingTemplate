@@ -2,9 +2,8 @@
 
 namespace EventSourcing.Domain.Interfaces.Action
 {
-    public interface IActionOutputDto<T> where T : IEvent
+    public interface IActionOutputDto
     {
         Guid Id { get; set; }
-        T Result { get; }
     }
 }

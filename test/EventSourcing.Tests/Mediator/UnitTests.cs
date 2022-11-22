@@ -34,7 +34,7 @@ namespace EventSourcing.Tests.Mediator
         {
             IMediator mediator = GetMediator();
 
-            await Assert.ThrowsAsync<EventHandlerNotFoundException>(async()=>await mediator.RunAsync(new RegisterCommandEvent()));
+            await Assert.ThrowsAsync<EventHandlerNotFoundException>(async()=>await mediator.RunAsync<RegisterCommandEvent, RegisterInputDto, RegisterOutputDto>(new RegisterCommandEvent(), new RegisterInputDto()));
         }
 
         

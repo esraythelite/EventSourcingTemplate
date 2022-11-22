@@ -1,14 +1,13 @@
 ﻿using EventSourcing.Domain.Interfaces.Action;
 using EventSourcing.Domain.Interfaces.Event;
-using EventSourcing.Domain.Services.Queue;
 
 namespace EventSourcing.Domain.Interfaces.Mediator
 {
     public interface IMediator
     {
-        Task AddHandlerAsync<E>(params IAction<E, IActionInputDto<E>, IActionOutputDto<E>>[] handlers ) where E : IEvent;
-        Task RunAsync<E>( E @event, IActionInputDto<E>? input = null, IActionSuccessResult<IActionOutputDto<E>>? onSuccess = null, IActionFailureResult? onFailure = null ) where E : IEvent;
-        Task<bool> IsHandlerExistsAsync( IEvent evt );
+        Task AddHandlerAsync<E, T, K>(params IAction<E, T, K>[] handlers) where E : IEvent where T : IActionInputDto where K : IActionOutputDto;
+        Task RunAsync<E, T, K>(E @event, T? input, IActionSuccessResult<K>? onSuccess = null, IActionFailureResult? onFailure = null) where E : IEvent where T : IActionInputDto where K : IActionOutputDto;
+        Task<bool> IsHandlerExistsAsync(IEvent evt );
         Task<bool> IsHandlerExistsAsync<E>() where E : IEvent;
 
     }

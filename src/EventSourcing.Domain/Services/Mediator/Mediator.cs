@@ -18,7 +18,7 @@ namespace EventSourcing.Domain.Services.Mediator
             EventQueue = eventQueue;
         }
 
-        public async Task AddHandlerAsync<E>(params IAction<E, IActionInputDto<E>, IActionOutputDto<E>>[] handlers ) where E : IEvent
+        public async Task AddHandlerAsync<E,T,K>(params IAction<E, T, K>[] handlers ) where E : IEvent where T : IActionInputDto where K : IActionOutputDto
         {
             if (!await IsHandlerExistsAsync<E>())
                 Handlers[typeof(E)] = new List<object>();
@@ -29,7 +29,7 @@ namespace EventSourcing.Domain.Services.Mediator
         public Task<bool> IsHandlerExistsAsync<E>() where E : IEvent
             => Task.FromResult(Handlers.ContainsKey(typeof(E)));
 
-        public async Task RunAsync<E>( E @event, IActionInputDto<E>? input = null, IActionSuccessResult<IActionOutputDto<E>>? onSuccess = null, IActionFailureResult? onFailure = null ) where E : IEvent
+        public async Task RunAsync<E, T, K>(E @event, T? input, IActionSuccessResult<K>? onSuccess = null, IActionFailureResult? onFailure = null) where E : IEvent where T : IActionInputDto where K : IActionOutputDto
         {
             if (!await IsHandlerExistsAsync<E>())
                 throw new EventHandlerNotFoundException();
@@ -40,7 +40,7 @@ namespace EventSourcing.Domain.Services.Mediator
             {
                 try
                 {
-                    var h = handler as IAction<E, IActionInputDto<E>, IActionOutputDto<E>>;
+                    var h = handler as IAction<E, T, K>;
                     var res = await h.ExecuteAsync(input);
                     if (onSuccess != null)
                     {
